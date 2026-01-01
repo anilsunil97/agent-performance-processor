@@ -495,18 +495,8 @@ def main():
         st.markdown("""
         1. Upload your agent performance CSV file
         2. The app will automatically process and format the data
-        3. Review the processed data with color-coded formatting
-        4. Download the cleaned CSV or styled Excel file
+        3. Download the cleaned CSV or styled Excel file
         
-        **Features:**
-        - Removes unnecessary columns
-        - Calculates total pause time
-        - Sorts by total inbound calls
-        - Applies color-coded formatting
-        - Adds summary statistics
-        - Includes REMARKS column with 'HD' marker
-        - ID column as first column
-        """)
 
 if __name__ == "__main__":
     main()
