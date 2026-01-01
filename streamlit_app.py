@@ -19,6 +19,55 @@ st.set_page_config(
     layout="wide"
 )
 
+# Custom CSS for logo styling
+st.markdown("""
+<style>
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo-text {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    margin: 0;
+}
+
+.logo-subtitle {
+    color: #f0f0f0;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+.main-header {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Display Logo
+st.markdown("""
+<div class="logo-container">
+    <div>
+        <div class="logo-text">📊 Agent Performance Processor</div>
+        <div class="logo-subtitle">Professional Data Analysis & Reporting Tool</div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
 def load_and_clean_data(file):
     """Load CSV and perform initial cleaning"""
     try:
@@ -377,8 +426,8 @@ def save_to_excel(df, metadata_rows):
 
 # Main Streamlit App
 def main():
-    st.title("📊 Agent Performance Data Processor")
-    st.markdown("---")
+    # Main content header
+    st.markdown('<h2 class="main-header">Upload and Process Your Agent Performance Data</h2>', unsafe_allow_html=True)
     
     # File uploader
     uploaded_file = st.file_uploader(

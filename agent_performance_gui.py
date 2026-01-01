@@ -17,8 +17,25 @@ class AgentPerformanceGUI:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Agent Performance Data Processor")
-        self.root.geometry("1200x800")
-        self.root.minsize(800, 600)
+        
+        # Get screen dimensions
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        
+        # Calculate window size (80% of screen size, but with reasonable limits)
+        window_width = min(1000, int(screen_width * 0.8))
+        window_height = min(700, int(screen_height * 0.8))
+        
+        # Calculate position to center the window
+        x = (screen_width - window_width) // 2
+        y = (screen_height - window_height) // 2
+        
+        # Set window size and position
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+        self.root.minsize(600, 400)  # Smaller minimum size
+        
+        # Make window resizable
+        self.root.resizable(True, True)
         
         # Variables
         self.df = None
@@ -29,27 +46,47 @@ class AgentPerformanceGUI:
         
     def setup_ui(self):
         """Setup the user interface"""
-        # Main frame
-        main_frame = ttk.Frame(self.root, padding="10")
+        # Main frame (reduced padding for smaller screens)
+        main_frame = ttk.Frame(self.root, padding="5")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Configure grid weights
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
         main_frame.columnconfigure(1, weight=1)
-        main_frame.rowconfigure(2, weight=1)
+        main_frame.rowconfigure(3, weight=1)  # Updated for logo frame
         
-        # Title
-        title_label = ttk.Label(
-            main_frame, 
-            text="📊 Agent Performance Data Processor", 
-            font=("Arial", 16, "bold")
+        # Logo Frame (more compact)
+        logo_frame = ttk.Frame(main_frame, padding="5")
+        logo_frame.grid(row=0, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 5))
+        logo_frame.columnconfigure(0, weight=1)
+        
+        # Main Logo Title (smaller font for compact display)
+        logo_title = ttk.Label(
+            logo_frame,
+            text="📊 Agent Performance Processor",
+            font=("Arial", 16, "bold"),
+            foreground="#2c3e50"
         )
-        title_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
+        logo_title.grid(row=0, column=0, pady=(0, 2))
+        
+        # Subtitle (smaller font)
+        subtitle = ttk.Label(
+            logo_frame,
+            text="Professional Data Analysis & Reporting Tool",
+            font=("Arial", 9, "italic"),
+            foreground="#7f8c8d"
+        )
+        subtitle.grid(row=1, column=0, pady=(0, 5))
+        
+        # Separator (more compact)
+        separator = ttk.Separator(logo_frame, orient='horizontal')
+        separator.grid(row=2, column=0, sticky=(tk.W, tk.E), pady=(2, 5))
         
         # File selection frame
-        file_frame = ttk.LabelFrame(main_frame, text="File Selection", padding="10")
-        file_frame.grid(row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 10))
+        # File selection frame (reduced padding)
+        file_frame = ttk.LabelFrame(main_frame, text="File Selection", padding="5")
+        file_frame.grid(row=1, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(0, 5))
         file_frame.columnconfigure(1, weight=1)
         
         # File selection
@@ -59,15 +96,57 @@ class AgentPerformanceGUI:
         file_entry = ttk.Entry(file_frame, textvariable=self.file_var, state="readonly")
         file_entry.grid(row=0, column=1, sticky=(tk.W, tk.E), padx=(0, 10))
         
-        browse_btn = ttk.Button(file_frame, text="Browse", command=self.browse_file)
-        browse_btn.grid(row=0, column=2)
+        # Colorful Browse button
+        browse_btn = tk.Button(
+            file_frame, 
+            text="📁 Browse", 
+            command=self.browse_file,
+            bg="#3498db",  # Blue background
+            fg="white",    # White text
+            font=("Arial", 10, "bold"),
+            relief="raised",
+            bd=2,
+            padx=15,
+            pady=8,
+            cursor="hand2"
+        )
+        browse_btn.grid(row=0, column=2, padx=(5, 5))
         
-        process_btn = ttk.Button(file_frame, text="Process Data", command=self.process_data)
-        process_btn.grid(row=0, column=3, padx=(10, 0))
+        # Add hover effects
+        def on_browse_enter(e):
+            browse_btn.config(bg="#2980b9")
+        def on_browse_leave(e):
+            browse_btn.config(bg="#3498db")
+        browse_btn.bind("<Enter>", on_browse_enter)
+        browse_btn.bind("<Leave>", on_browse_leave)
         
-        # Notebook for tabs
+        # Colorful Process Data button
+        process_btn = tk.Button(
+            file_frame, 
+            text="⚡ Process Data", 
+            command=self.process_data,
+            bg="#27ae60",  # Green background
+            fg="white",    # White text
+            font=("Arial", 10, "bold"),
+            relief="raised",
+            bd=2,
+            padx=15,
+            pady=8,
+            cursor="hand2"
+        )
+        process_btn.grid(row=0, column=3, padx=(5, 0))
+        
+        # Add hover effects
+        def on_process_enter(e):
+            process_btn.config(bg="#229954")
+        def on_process_leave(e):
+            process_btn.config(bg="#27ae60")
+        process_btn.bind("<Enter>", on_process_enter)
+        process_btn.bind("<Leave>", on_process_leave)
+        
+        # Notebook for tabs (reduced padding)
         self.notebook = ttk.Notebook(main_frame)
-        self.notebook.grid(row=2, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 10))
+        self.notebook.grid(row=2, column=0, columnspan=3, sticky=(tk.W, tk.E, tk.N, tk.S), pady=(0, 5))
         
         # Data tab
         self.data_frame = ttk.Frame(self.notebook)
@@ -86,27 +165,93 @@ class AgentPerformanceGUI:
         self.notebook.add(self.log_frame, text="Log")
         self.setup_log_view()
         
-        # Export frame
-        export_frame = ttk.LabelFrame(main_frame, text="Export Options", padding="10")
+        # Export frame (reduced padding)
+        export_frame = ttk.LabelFrame(main_frame, text="Export Options", padding="5")
         export_frame.grid(row=3, column=0, columnspan=3, sticky=(tk.W, tk.E))
         
-        export_csv_btn = ttk.Button(export_frame, text="Export CSV", command=self.export_csv)
-        export_csv_btn.grid(row=0, column=0, padx=(0, 10))
+        # Colorful Export CSV button
+        export_csv_btn = tk.Button(
+            export_frame, 
+            text="📄 Export CSV", 
+            command=self.export_csv,
+            bg="#e67e22",  # Orange background
+            fg="white",    # White text
+            font=("Arial", 11, "bold"),
+            relief="raised",
+            bd=2,
+            padx=20,
+            pady=10,
+            cursor="hand2"
+        )
+        export_csv_btn.grid(row=0, column=0, padx=(0, 15))
         
-        export_excel_btn = ttk.Button(export_frame, text="Export Styled Excel", command=self.export_excel)
-        export_excel_btn.grid(row=0, column=1)
+        # Add hover effects
+        def on_csv_enter(e):
+            export_csv_btn.config(bg="#d35400")
+        def on_csv_leave(e):
+            export_csv_btn.config(bg="#e67e22")
+        export_csv_btn.bind("<Enter>", on_csv_enter)
+        export_csv_btn.bind("<Leave>", on_csv_leave)
         
-        # Status bar
+        # Colorful Export Excel button
+        export_excel_btn = tk.Button(
+            export_frame, 
+            text="📊 Export Styled Excel", 
+            command=self.export_excel,
+            bg="#9b59b6",  # Purple background
+            fg="white",    # White text
+            font=("Arial", 11, "bold"),
+            relief="raised",
+            bd=2,
+            padx=20,
+            pady=10,
+            cursor="hand2"
+        )
+        export_excel_btn.grid(row=0, column=1, padx=(0, 15))
+        
+        # Add hover effects
+        def on_excel_enter(e):
+            export_excel_btn.config(bg="#8e44ad")
+        def on_excel_leave(e):
+            export_excel_btn.config(bg="#9b59b6")
+        export_excel_btn.bind("<Enter>", on_excel_enter)
+        export_excel_btn.bind("<Leave>", on_excel_leave)
+        
+        # Test Dialog button (smaller, different color)
+        test_dialog_btn = tk.Button(
+            export_frame, 
+            text="🔧 Test Dialog", 
+            command=self.test_dialog,
+            bg="#95a5a6",  # Gray background
+            fg="white",    # White text
+            font=("Arial", 9, "bold"),
+            relief="raised",
+            bd=2,
+            padx=15,
+            pady=8,
+            cursor="hand2"
+        )
+        test_dialog_btn.grid(row=0, column=2)
+        
+        # Add hover effects
+        def on_test_enter(e):
+            test_dialog_btn.config(bg="#7f8c8d")
+        def on_test_leave(e):
+            test_dialog_btn.config(bg="#95a5a6")
+        test_dialog_btn.bind("<Enter>", on_test_enter)
+        test_dialog_btn.bind("<Leave>", on_test_leave)
+        
+        # Status bar (reduced padding)
         self.status_var = tk.StringVar()
         self.status_var.set("Ready - Select a CSV file to begin")
         status_bar = ttk.Label(main_frame, textvariable=self.status_var, relief=tk.SUNKEN)
-        status_bar.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(10, 0))
+        status_bar.grid(row=4, column=0, columnspan=3, sticky=(tk.W, tk.E), pady=(5, 0))
         
     def setup_data_view(self):
         """Setup the data view tab"""
-        # Frame for treeview and scrollbars
+        # Frame for treeview and scrollbars (reduced padding)
         tree_frame = ttk.Frame(self.data_frame)
-        tree_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        tree_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         
         # Treeview
         self.tree = ttk.Treeview(tree_frame)
@@ -128,13 +273,13 @@ class AgentPerformanceGUI:
     def setup_summary_view(self):
         """Setup the summary view tab"""
         summary_text = scrolledtext.ScrolledText(self.summary_frame, wrap=tk.WORD)
-        summary_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        summary_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.summary_text = summary_text
         
     def setup_log_view(self):
         """Setup the log view tab"""
         log_text = scrolledtext.ScrolledText(self.log_frame, wrap=tk.WORD)
-        log_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        log_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
         self.log_text = log_text
         
     def log(self, message):
@@ -145,9 +290,15 @@ class AgentPerformanceGUI:
         
     def browse_file(self):
         """Browse for CSV file"""
+        # Ensure dialog appears on top
+        self.root.lift()
+        self.root.focus_force()
+        
         filename = filedialog.askopenfilename(
+            parent=self.root,
             title="Select Agent Performance CSV File",
-            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
+            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+            initialdir=os.path.expanduser("~/Desktop")
         )
         if filename:
             self.file_var.set(filename)
@@ -325,7 +476,7 @@ class AgentPerformanceGUI:
             return df
             
     def update_treeview(self):
-        """Update the treeview with processed data"""
+        """Update the treeview with processed data using exact Streamlit colors"""
         if self.processed_df is None:
             return
             
@@ -342,26 +493,67 @@ class AgentPerformanceGUI:
         for col in columns:
             self.tree.heading(col, text=col)
             self.tree.column(col, width=100, minwidth=50)
+        
+        # Define tags for different colors (matching Streamlit exactly)
+        self.tree.tag_configure('excellent', background='#90EE90', foreground='black')  # Light green
+        self.tree.tag_configure('good', background='#FFA500', foreground='black')       # Orange
+        self.tree.tag_configure('average', background='#FFFF00', foreground='black')    # Yellow
+        self.tree.tag_configure('below_avg', background='#FF6B6B', foreground='black')  # Red
+        self.tree.tag_configure('time_hd', background='#FFFF00', foreground='black')    # Yellow for HD time
+        self.tree.tag_configure('time_red', background='#FF6B6B', foreground='black')   # Red for <8:45 time
+        self.tree.tag_configure('pause_high', background='#DC143C', foreground='black') # Dark red for >2hr pause
+        self.tree.tag_configure('remarks_hd', background='#FFFF00', foreground='black') # Yellow for HD remarks
             
-        # Insert data
+        # Insert data with exact Streamlit styling
         for index, row in self.processed_df.iterrows():
             values = [str(row[col]) for col in columns]
-            item = self.tree.insert('', 'end', values=values)
             
-            # Apply color coding based on TOTAL INBOUND CALLS
+            # Determine row styling based on TOTAL INBOUND CALLS
+            tag = ''
             if 'TOTAL INBOUND CALLS' in columns:
                 try:
                     calls = float(row['TOTAL INBOUND CALLS'])
                     if calls >= 70:
-                        self.tree.set(item, 'TOTAL INBOUND CALLS', f"🟢 {calls}")
+                        tag = 'excellent'
                     elif calls >= 60:
-                        self.tree.set(item, 'TOTAL INBOUND CALLS', f"🟠 {calls}")
+                        tag = 'good'
                     elif calls >= 50:
-                        self.tree.set(item, 'TOTAL INBOUND CALLS', f"🟡 {calls}")
+                        tag = 'average'
                     else:
-                        self.tree.set(item, 'TOTAL INBOUND CALLS', f"🔴 {calls}")
+                        tag = 'below_avg'
                 except:
                     pass
+            
+            # Check for TIME coloring
+            if 'TIME' in columns:
+                try:
+                    td_val = pd.to_timedelta(row['TIME'])
+                    threshold_red = pd.to_timedelta('8:45:00')
+                    threshold_hd = pd.to_timedelta('7:00:00')
+                    
+                    if td_val < threshold_hd:
+                        tag = 'time_hd'
+                    elif td_val < threshold_red:
+                        tag = 'time_red'
+                except:
+                    pass
+            
+            # Check for PAUSE/TOTAL PAUSE coloring
+            for pause_col in ['PAUSE', 'TOTAL PAUSE']:
+                if pause_col in columns:
+                    try:
+                        td_val = pd.to_timedelta(row[pause_col])
+                        threshold = pd.to_timedelta('2:00:00')
+                        if td_val > threshold:
+                            tag = 'pause_high'
+                    except:
+                        pass
+            
+            # Check for REMARKS HD
+            if 'REMARKS' in columns and str(row['REMARKS']).strip().upper() == 'HD':
+                tag = 'remarks_hd'
+            
+            item = self.tree.insert('', 'end', values=values, tags=(tag,))
                     
     def update_summary(self):
         """Update the summary tab"""
@@ -425,20 +617,65 @@ class AgentPerformanceGUI:
         self.summary_text.delete(1.0, tk.END)
         self.summary_text.insert(1.0, '\n'.join(summary))
         
+    def test_dialog(self):
+        """Test if file dialog works"""
+        try:
+            self.log("Testing file dialog...")
+            self.root.lift()
+            self.root.focus_force()
+            
+            filename = filedialog.asksaveasfilename(
+                parent=self.root,
+                title="Test Save Dialog",
+                defaultextension=".txt",
+                filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
+            )
+            
+            if filename:
+                self.log(f"Dialog test successful! Selected: {filename}")
+                messagebox.showinfo("Test Result", f"Dialog works! Selected: {filename}")
+            else:
+                self.log("Dialog test: User cancelled")
+                messagebox.showinfo("Test Result", "Dialog appeared but user cancelled")
+                
+        except Exception as e:
+            error_msg = f"Dialog test failed: {str(e)}"
+            self.log(f"ERROR: {error_msg}")
+            messagebox.showerror("Test Failed", error_msg)
+            
     def export_csv(self):
         """Export data to CSV"""
         if self.processed_df is None:
             messagebox.showerror("Error", "No data to export. Please process a file first.")
             return
             
-        filename = filedialog.asksavename(
-            defaultextension=".csv",
-            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
-            title="Save CSV File"
-        )
-        
-        if filename:
+        try:
+            # Ensure dialog appears on top
+            self.root.lift()
+            self.root.focus_force()
+            self.root.update()
+            
+            # Try different approaches for the dialog
             try:
+                filename = filedialog.asksaveasfilename(
+                    parent=self.root,
+                    defaultextension=".csv",
+                    filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+                    title="Save CSV File",
+                    initialdir=os.path.expanduser("~/Desktop")
+                )
+            except:
+                # Fallback without initialdir
+                filename = filedialog.asksaveasfilename(
+                    parent=self.root,
+                    defaultextension=".csv",
+                    filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+                    title="Save CSV File"
+                )
+            
+            self.log(f"Dialog returned filename: {filename}")
+            
+            if filename:
                 # Create CSV with metadata
                 with open(filename, 'w', newline='', encoding='utf-8') as f:
                     # Write metadata
@@ -450,9 +687,13 @@ class AgentPerformanceGUI:
                 
                 messagebox.showinfo("Success", f"Data exported to {filename}")
                 self.log(f"Data exported to CSV: {filename}")
+            else:
+                self.log("Export cancelled by user")
                 
-            except Exception as e:
-                messagebox.showerror("Error", f"Error exporting CSV: {str(e)}")
+        except Exception as e:
+            error_msg = f"Error exporting CSV: {str(e)}"
+            messagebox.showerror("Error", error_msg)
+            self.log(f"ERROR: {error_msg}")
                 
     def export_excel(self):
         """Export data to styled Excel"""
@@ -460,14 +701,33 @@ class AgentPerformanceGUI:
             messagebox.showerror("Error", "No data to export. Please process a file first.")
             return
             
-        filename = filedialog.asksavename(
-            defaultextension=".xlsx",
-            filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")],
-            title="Save Excel File"
-        )
-        
-        if filename:
+        try:
+            # Ensure dialog appears on top
+            self.root.lift()
+            self.root.focus_force()
+            self.root.update()
+            
+            # Try different approaches for the dialog
             try:
+                filename = filedialog.asksaveasfilename(
+                    parent=self.root,
+                    defaultextension=".xlsx",
+                    filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")],
+                    title="Save Excel File",
+                    initialdir=os.path.expanduser("~/Desktop")
+                )
+            except:
+                # Fallback without initialdir
+                filename = filedialog.asksaveasfilename(
+                    parent=self.root,
+                    defaultextension=".xlsx",
+                    filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")],
+                    title="Save Excel File"
+                )
+            
+            self.log(f"Dialog returned filename: {filename}")
+            
+            if filename:
                 self.status_var.set("Creating Excel file...")
                 self.log("Creating styled Excel file...")
                 
@@ -477,12 +737,16 @@ class AgentPerformanceGUI:
                     args=(filename,), 
                     daemon=True
                 ).start()
+            else:
+                self.log("Export cancelled by user")
                 
-            except Exception as e:
-                messagebox.showerror("Error", f"Error exporting Excel: {str(e)}")
+        except Exception as e:
+            error_msg = f"Error exporting Excel: {str(e)}"
+            messagebox.showerror("Error", error_msg)
+            self.log(f"ERROR: {error_msg}")
                 
     def _export_excel_thread(self, filename):
-        """Export Excel in background thread"""
+        """Export Excel in background thread with exact Streamlit app styling"""
         try:
             output = io.BytesIO()
             
@@ -491,22 +755,161 @@ class AgentPerformanceGUI:
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
                 self.processed_df.to_excel(writer, index=False, startrow=num_metadata_rows, sheet_name='Agent Performance')
             
-            # Load and modify workbook for styling
+            # Load and modify workbook
             output.seek(0)
             wb = load_workbook(output)
             ws = wb.active
             
-            # Apply styling (simplified version)
+            # Get the current header row
+            header_row_num = num_metadata_rows + 1
+            
+            # Collect all data rows
+            data_rows = []
+            for row in ws.iter_rows(min_row=header_row_num, values_only=False):
+                data_rows.append(row)
+            
+            # Delete all rows from header onwards
+            if ws.max_row >= header_row_num:
+                ws.delete_rows(header_row_num, ws.max_row - header_row_num + 1)
+            
+            # Add metadata rows
+            metadata_style = Font(bold=True, size=11)
+            metadata_fill = PatternFill(start_color='E8F4F8', end_color='E8F4F8', fill_type='solid')
+            
+            current_row = 1
+            for row in self.metadata_rows:
+                clean_row = row.strip().replace('\n', '')
+                if clean_row:
+                    ws.cell(row=current_row, column=1, value=clean_row)
+                    ws.cell(row=current_row, column=1).font = metadata_style
+                    ws.cell(row=current_row, column=1).fill = metadata_fill
+                    current_row += 1
+            
+            # Add data table with styling
             header_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
             header_font = Font(bold=True, color='000000')
             
-            # Style header row
-            header_row_num = num_metadata_rows + 1
-            for col in range(1, len(self.processed_df.columns) + 1):
-                cell = ws.cell(row=header_row_num, column=col)
-                cell.fill = header_fill
-                cell.font = header_font
-                cell.alignment = Alignment(horizontal='center', vertical='center')
+            # Color definitions for conditional formatting (EXACT SAME AS STREAMLIT)
+            green_fill = PatternFill(start_color='90EE90', end_color='90EE90', fill_type='solid')
+            orange_fill = PatternFill(start_color='FFA500', end_color='FFA500', fill_type='solid')
+            yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+            red_fill = PatternFill(start_color='FF6B6B', end_color='FF6B6B', fill_type='solid')
+            dark_red_fill = PatternFill(start_color='DC143C', end_color='DC143C', fill_type='solid')
+            black_font = Font(bold=True, color='000000')
+            
+            header_row_idx = None
+            for idx, row_data in enumerate(data_rows):
+                is_header_row = (idx == 0)
+                if is_header_row:
+                    header_row_idx = current_row
+                
+                for col_idx, cell in enumerate(row_data, start=1):
+                    new_cell = ws.cell(row=current_row, column=col_idx)
+                    if cell.value is not None:
+                        new_cell.value = cell.value
+                    
+                    if is_header_row:
+                        new_cell.fill = header_fill
+                        new_cell.font = header_font
+                    else:
+                        # Get column name from header
+                        col_name = ws.cell(row=header_row_idx, column=col_idx).value
+                        
+                        # Apply conditional formatting (EXACT SAME AS STREAMLIT)
+                        if col_name == 'TOTAL INBOUND CALLS':
+                            try:
+                                val = float(new_cell.value)
+                                if val >= 70:
+                                    new_cell.fill = green_fill
+                                    new_cell.font = black_font
+                                elif val >= 60:
+                                    new_cell.fill = orange_fill
+                                    new_cell.font = black_font
+                                elif val >= 50:
+                                    new_cell.fill = yellow_fill
+                                    new_cell.font = black_font
+                                else:
+                                    new_cell.fill = red_fill
+                                    new_cell.font = black_font
+                            except:
+                                pass
+                        
+                        elif col_name == 'TIME':
+                            try:
+                                td_val = pd.to_timedelta(new_cell.value)
+                                threshold_red = pd.to_timedelta('8:45:00')
+                                threshold_hd = pd.to_timedelta('7:00:00')
+                                
+                                if td_val < threshold_hd:
+                                    new_cell.fill = yellow_fill
+                                    new_cell.font = black_font
+                                elif td_val < threshold_red:
+                                    new_cell.fill = red_fill
+                                    new_cell.font = black_font
+                            except:
+                                pass
+                        
+                        elif col_name in ['PAUSE', 'TOTAL PAUSE']:
+                            try:
+                                td_val = pd.to_timedelta(new_cell.value)
+                                threshold = pd.to_timedelta('2:00:00')
+                                if td_val > threshold:
+                                    new_cell.fill = dark_red_fill
+                                    new_cell.font = black_font
+                            except:
+                                pass
+                        
+                        elif col_name == 'REMARKS':
+                            if str(new_cell.value).strip().upper() == 'HD':
+                                new_cell.fill = yellow_fill
+                                new_cell.font = black_font
+                    
+                    new_cell.alignment = Alignment(horizontal='center', vertical='center')
+                current_row += 1
+            
+            # Add summary rows below the table (separate rows)
+            summary_row_1 = current_row + 2  # Leave one empty row
+            summary_row_2 = current_row + 3
+            
+            # Calculate totals
+            total_inbound = int(self.processed_df['TOTAL INBOUND CALLS'].sum())
+            avg_inbound = float(self.processed_df['TOTAL INBOUND CALLS'].mean())
+            
+            # Style for summary
+            summary_font = Font(bold=True, size=12, color='FFFFFF')
+            summary_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
+            border = Border(
+                left=Side(style='thin'),
+                right=Side(style='thin'),
+                top=Side(style='thin'),
+                bottom=Side(style='thin')
+            )
+            
+            # First row: TOTAL INBOUND CALLS
+            ws.cell(row=summary_row_1, column=1, value='TOTAL INBOUND CALLS')
+            ws.cell(row=summary_row_1, column=1).font = summary_font
+            ws.cell(row=summary_row_1, column=1).fill = summary_fill
+            ws.cell(row=summary_row_1, column=1).alignment = Alignment(horizontal='center', vertical='center')
+            ws.cell(row=summary_row_1, column=1).border = border
+            
+            ws.cell(row=summary_row_1, column=2, value=total_inbound)
+            ws.cell(row=summary_row_1, column=2).font = summary_font
+            ws.cell(row=summary_row_1, column=2).fill = summary_fill
+            ws.cell(row=summary_row_1, column=2).alignment = Alignment(horizontal='center', vertical='center')
+            ws.cell(row=summary_row_1, column=2).border = border
+            
+            # Second row: AVERAGE INBOUND CALLS
+            ws.cell(row=summary_row_2, column=1, value='AVERAGE INBOUND CALLS')
+            ws.cell(row=summary_row_2, column=1).font = summary_font
+            ws.cell(row=summary_row_2, column=1).fill = summary_fill
+            ws.cell(row=summary_row_2, column=1).alignment = Alignment(horizontal='center', vertical='center')
+            ws.cell(row=summary_row_2, column=1).border = border
+            
+            ws.cell(row=summary_row_2, column=2, value=f"{avg_inbound:.2f}")
+            ws.cell(row=summary_row_2, column=2).font = summary_font
+            ws.cell(row=summary_row_2, column=2).fill = summary_fill
+            ws.cell(row=summary_row_2, column=2).alignment = Alignment(horizontal='center', vertical='center')
+            ws.cell(row=summary_row_2, column=2).border = border
             
             # Save file
             wb.save(filename)
@@ -515,7 +918,9 @@ class AgentPerformanceGUI:
             self.root.after(0, lambda: self._excel_export_complete(filename))
             
         except Exception as e:
-            self.root.after(0, lambda: messagebox.showerror("Error", f"Error creating Excel file: {str(e)}"))
+            error_msg = f"Error creating Excel file: {str(e)}"
+            self.root.after(0, lambda: messagebox.showerror("Error", error_msg))
+            self.root.after(0, lambda: self.log(f"ERROR: {error_msg}"))
             
     def _excel_export_complete(self, filename):
         """Called when Excel export is complete"""

@@ -1,0 +1,56 @@
+🎯 WHAT IS THIS FOLDER?
+====================
+
+This folder contains the PROFESSIONAL WINDOWS INSTALLER for:
+📊 Agent Performance Data Processor
+
+📦 MAIN FILES:
+- AgentPerformanceProcessor_Setup.exe  ← THE INSTALLER (click this!)
+- README_INSTALLER.txt                 ← Installation instructions
+- Install_AgentPerformanceProcessor.bat ← Easy installer launcher
+
+🚀 TO INSTALL:
+1. Double-click "AgentPerformanceProcessor_Setup.exe"
+2. Follow the installation wizard
+3. Choose your options (Start Menu, Desktop shortcut, etc.)
+4. Click "Install" and wait
+5. Launch from Start Menu or Desktop
+
+✨ WHAT YOU GET:
+- Professional Windows application
+- Start Menu shortcuts
+- Desktop shortcut (optional)
+- Add/Remove Programs integration
+- CSV file associations
+- Professional uninstaller
+- Exact same features as the web version
+- 100% offline operation
+
+🎨 FEATURES:
+- Beautiful, colorful interface
+- Professional logo and branding
+- Excel export with styling
+- Real-time data processing
+- Performance color coding
+- Windows "Save As" dialogs
+- Responsive design for any screen size
+
+🔧 SYSTEM REQUIREMENTS:
+- Windows 10 or 11 (64-bit)
+- Administrator rights for installation
+- 50MB free disk space
+- No Python or other software needed
+
+🛡️ SECURITY:
+- Safe to install and run
+- No malware or adware
+- Open source application
+- May be scanned by antivirus (normal)
+
+📊 IDENTICAL TO WEB VERSION:
+This gives you the EXACT same functionality as:
+https://agent-performance-proceappr-arjunexpress.streamlit.app/
+
+But completely offline and integrated with Windows!
+
+ENJOY! 🎉
