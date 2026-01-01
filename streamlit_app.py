@@ -250,7 +250,7 @@ def save_to_excel(df, metadata_rows):
         orange_fill = PatternFill(start_color='FFA500', end_color='FFA500', fill_type='solid')
         yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
         red_fill = PatternFill(start_color='FF6B6B', end_color='FF6B6B', fill_type='solid')
-        dark_red_fill = PatternFill(start_color='DC143C', end_color='DC143C', fill_type='solid')  # Dark red (Crimson)
+        dark_red_fill = PatternFill(start_color='DC143C', end_color='DC143C', fill_type='solid')
         black_font = Font(bold=True, color='000000')
         
         header_row_idx = None
@@ -310,14 +310,14 @@ def save_to_excel(df, metadata_rows):
                             td_val = pd.to_timedelta(new_cell.value)
                             threshold = pd.to_timedelta('2:00:00')
                             if td_val > threshold:
-                                new_cell.fill = dark_red_fill  # Dark red background
-                                new_cell.font = black_font  # Black text
+                                new_cell.fill = dark_red_fill
+                                new_cell.font = black_font
                         except:
                             pass
                     
                     elif col_name == 'REMARKS':
                         if str(new_cell.value).strip().upper() == 'HD':
-                            new_cell.fill = yellow_fill  # Yellow background for HD
+                            new_cell.fill = yellow_fill
                             new_cell.font = black_font
                 
                 new_cell.alignment = Alignment(horizontal='center', vertical='center')
@@ -377,7 +377,7 @@ def save_to_excel(df, metadata_rows):
 
 # Main Streamlit App
 def main():
-    st.title("📊 Agent Performance Data Processor - Updated")
+    st.title("📊 Agent Performance Data Processor")
     st.markdown("---")
     
     # File uploader
@@ -429,13 +429,15 @@ def main():
                 
                 # Display styled dataframe
                 st.subheader("📊 Processed Data with Color Formatting")
-                st.markdown("""
-                **Color Legend:**
-                - **Green**: >=70 calls | **Orange**: 60-69 calls | **Yellow**: 50-59 calls | **Red**: <50 calls
-                - **Yellow TIME**: <7 hours (HD) | **Red TIME**: <8:45 hours
-                - **Dark Red PAUSE**: >2 hours (black text)
-                - **Yellow REMARKS**: Shows "HD" for login hours <7
-                """)
+                
+                color_legend = """
+**Color Legend:**
+- **Green**: >=70 calls | **Orange**: 60-69 calls | **Yellow**: 50-59 calls | **Red**: <50 calls
+- **Yellow TIME**: <7 hours (HD) | **Red TIME**: <8:45 hours  
+- **Dark Red PAUSE**: >2 hours (black text)
+- **Yellow REMARKS**: Shows "HD" for login hours <7
+"""
+                st.markdown(color_legend)
                 
                 # Apply styling and display
                 styled_df = apply_styling_to_dataframe(df)
@@ -492,21 +494,23 @@ def main():
         # Instructions
         st.markdown("---")
         st.subheader("Instructions")
-        st.markdown("""
-        1. Upload your agent performance CSV file
-        2. The app will automatically process and format the data
-        3. Review the processed data with color-coded formatting
-        4. Download the cleaned CSV or styled Excel file
         
-        **Features:**
-        - Removes unnecessary columns
-        - Calculates total pause time
-        - Sorts by total inbound calls
-        - Applies color-coded formatting
-        - Adds summary statistics
-        - Includes REMARKS column with 'HD' marker
-        - ID column as first column
-        """)
+        instructions_text = """
+1. Upload your agent performance CSV file
+2. The app will automatically process and format the data
+3. Review the processed data with color-coded formatting
+4. Download the cleaned CSV or styled Excel file
+
+**Features:**
+- Removes unnecessary columns
+- Calculates total pause time
+- Sorts by total inbound calls
+- Applies color-coded formatting
+- Adds summary statistics
+- Includes REMARKS column with 'HD' marker
+- ID column as first column
+"""
+        st.markdown(instructions_text)
 
 if __name__ == "__main__":
     main()
